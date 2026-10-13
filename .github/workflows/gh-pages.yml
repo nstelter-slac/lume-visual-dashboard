@@ -1,0 +1,27 @@
+# Builds the documentation on every pull request to catch errors early, and
+# publishes it to GitHub Pages whenever changes land on main.
+
+name: Build & Deploy Documentation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'zensical.toml'
+      - 'mkdocs.yml'
+      - 'docs/**'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  docs:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: slaclab/swapps-ci-helpers/.github/workflows/docs.yml@73e6ba924aac5f822b050bd6bed12b0e45c64034
+    with:
+      docs-group: "docs"

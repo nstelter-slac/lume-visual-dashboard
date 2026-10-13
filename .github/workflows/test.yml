@@ -1,0 +1,14 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: slaclab/swapps-ci-helpers/.github/workflows/js-test.yml@73e6ba924aac5f822b050bd6bed12b0e45c64034

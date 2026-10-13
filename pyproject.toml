@@ -1,0 +1,11 @@
+[project]
+name = "swapps-react-template-docs"
+version = "0.1.0"
+description = "Documentation for swapps-react-template"
+readme = "README.md"
+requires-python = ">=3.14"
+
+[dependency-groups]
+docs = [
+    "zensical>=0.0.41",
+]

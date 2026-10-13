@@ -1,0 +1,42 @@
+[project]
+site_name = "swapps-react-template"
+site_url = "https://slaclab.github.io/swapps-react-template/"
+site_author = "SLAC National Accelerator Laboratory - EED / Software Applications Group"
+site_description = "Documentation for the swapps-react-template React project."
+
+repo_name = "slaclab/swapps-react-template"
+repo_url = "https://github.com/slaclab/swapps-react-template"
+
+[project.theme]
+language = "en"
+features = [
+  "content.code.copy",
+  "navigation.top",
+  "navigation.indexes",
+  "navigation.footer",
+  "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.extra]
+generator = false
+
+[project.markdown_extensions]
+attr_list = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight = {}
+pymdownx.superfences = {}
