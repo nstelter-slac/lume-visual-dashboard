@@ -11,4 +11,4 @@ on:
 
 jobs:
   test:
-    uses: slaclab/swapps-ci-helpers/.github/workflows/js-test.yml@73e6ba924aac5f822b050bd6bed12b0e45c64034
+    uses: slaclab/swapps-ci-helpers/.github/workflows/js-test.yml@fa01cd93bc7d649a955e2a280b272c8496ea1ce1
