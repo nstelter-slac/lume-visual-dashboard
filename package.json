@@ -2,7 +2,7 @@
   "name": "lume-visual-dashboard",
   "version": "0.1.0",
   "private": true,
-  "description": "React project template for EED Software Applications Group",
+  "description": "React project for LUME Visual Dashboard",
   "type": "module",
   "scripts": {
     "dev": "vite",
