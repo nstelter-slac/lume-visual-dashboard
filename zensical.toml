@@ -1,11 +1,11 @@
 [project]
-site_name = "swapps-react-template"
-site_url = "https://slaclab.github.io/swapps-react-template/"
+site_name = "Lume Visual Dashboard"
+site_url = "https://slaclab.github.io/lume-visual-dashboard/"
 site_author = "SLAC National Accelerator Laboratory - EED / Software Applications Group"
-site_description = "Documentation for the swapps-react-template React project."
+site_description = "Documentation for the Lume Visual Dashboard React project."
 
-repo_name = "slaclab/swapps-react-template"
-repo_url = "https://github.com/slaclab/swapps-react-template"
+repo_name = "slaclab/lume-visual-dashboard"
+repo_url = "https://github.com/slaclab/lume-visual-dashboard"
 
 [project.theme]
 language = "en"
