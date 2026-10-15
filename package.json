@@ -18,6 +18,13 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.90.0",
+    "@carbon/react": "^1.118.0",
+    "@carbon/styles": "^1.117.0",
+    "@tanstack/react-query": "^5.104.2",
+    "@tanstack/react-router": "^1.170.44",
+    "echarts": "^6.1.0",
+    "echarts-for-react": "^3.0.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
