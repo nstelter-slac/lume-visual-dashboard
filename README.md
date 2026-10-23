@@ -55,6 +55,8 @@ pnpm install
 
 ## Documentation
 
+Component guide: [Show one number with ScalarValue](docs/scalar-value.md).
+
 The `docs/` directory contains a [Zensical](https://zensical.org) documentation site. To preview it locally:
 
 ```sh

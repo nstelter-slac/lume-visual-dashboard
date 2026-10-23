@@ -1,0 +1,20 @@
+.scalar-value {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--cds-layer);
+  color: var(--cds-text-primary);
+}
+
+.scalar-value__name {
+  margin-bottom: 0.5rem;
+  color: var(--cds-text-secondary);
+}
+
+.scalar-value__reading {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.scalar-value__unit {
+  font-size: 1rem;
+}
