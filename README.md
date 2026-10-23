@@ -55,9 +55,8 @@ pnpm install
 
 ## Documentation
 
-Component guides: [Show one number with ScalarValue](docs/scalar-value.md) and
-[decode array data](docs/array-decoding.md) and
-[plot a list of numbers](docs/array-1d.md).
+See [Show model data](docs/plot-components.md) for examples of the number display,
+line chart, and array helpers.
 
 The `docs/` directory contains a [Zensical](https://zensical.org) documentation site. To preview it locally:
 
