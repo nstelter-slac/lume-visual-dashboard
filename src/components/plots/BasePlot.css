@@ -1,0 +1,4 @@
+.base-plot {
+  min-width: 0;
+  background: var(--cds-layer);
+}
