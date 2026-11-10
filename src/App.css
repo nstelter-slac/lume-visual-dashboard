@@ -130,3 +130,17 @@
 .plot-scroll .numeric {
   font-variant-numeric: tabular-nums;
 }
+
+.plot-image {
+  margin: 0;
+}
+
+/* The canvas keeps the image's pixel size; CSS scales it to the panel and keeps the aspect ratio. */
+.plot-image canvas {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  max-block-size: 36rem;
+  margin-inline: auto;
+  image-rendering: pixelated;
+}

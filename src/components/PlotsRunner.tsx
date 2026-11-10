@@ -7,7 +7,7 @@ import { useLiveStream } from '../hooks/useLiveStream';
 import { useThrottledValue } from '../hooks/useThrottledValue';
 import ModelSummary from './ModelSummary';
 import Panel from './Panel';
-import { chartsForVariable, type ChartId } from './plots/charts';
+import { axisCandidates, chartsForVariable, type ChartId } from './plots/charts';
 import VariablePlot from './plots/VariablePlot';
 
 type PlotsRunnerProps = {
@@ -29,20 +29,29 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
   const [kind, setKind] = useState<KindFilter>('all');
   const [variableId, setVariableId] = useState('');
   const [chartChoice, setChartChoice] = useState<ChartId>();
+  const [axisChoice, setAxisChoice] = useState<string>();
 
   const variables = config.outputs.filter((output) => kind === 'all' || output.kind === kind);
   const variable = config.outputs.find((output) => output.id === variableId);
 
-  const charts = variable ? chartsForVariable(variable) : [];
+  const charts = variable ? chartsForVariable(variable, config.outputs) : [];
   // A variable change can leave the old chart choice invalid; fall back to the first fit.
   const chart = charts.find((c) => c.id === chartChoice) ?? charts[0];
+
+  const axes = variable ? axisCandidates(variable, config.outputs) : [];
+  const axisId =
+    chart?.id === 'line-vs-s'
+      ? axisChoice && axes.includes(axisChoice)
+        ? axisChoice
+        : axes[0]
+      : undefined;
 
   // useLiveStream keys on the content, so a fresh array each render is fine.
   const outputIds =
     variable && chart
       ? chart.id === 'scalar-list'
         ? config.outputs.filter((o) => o.kind === 'scalar').map((o) => o.id)
-        : [variable.id]
+        : [variable.id, ...(axisId ? [axisId] : [])]
       : [];
 
   const live = useLiveStream(name, { outputs: outputIds });
@@ -99,6 +108,18 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
               charts.map((c) => <SelectItem key={c.id} value={c.id} text={c.label} />)
             )}
           </Select>
+          {axisId ? (
+            <Select
+              id="plot-axis-select"
+              labelText="x axis array"
+              value={axisId}
+              onChange={(e) => setAxisChoice(e.target.value)}
+            >
+              {axes.map((id) => (
+                <SelectItem key={id} value={id} text={id} />
+              ))}
+            </Select>
+          ) : null}
           {variable && chart ? (
             <div className="stream-toolbar">
               <Tag type={live.status === 'open' ? 'green' : 'gray'}>{live.status}</Tag>
@@ -117,7 +138,12 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
       </Panel>
       {variable && chart ? (
         <Panel title={variable.id} description={chart.label}>
-          <VariablePlot chart={chart.id} variableId={variable.id} outputs={frame?.outputs} />
+          <VariablePlot
+            chart={chart.id}
+            variableId={variable.id}
+            axisId={axisId}
+            outputs={frame?.outputs}
+          />
         </Panel>
       ) : null}
     </Stack>
