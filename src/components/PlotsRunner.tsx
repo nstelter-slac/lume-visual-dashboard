@@ -3,6 +3,7 @@ import { InlineNotification, Select, SelectItem, Stack, Tag } from '@carbon/reac
 
 import type { ConfigResponse, OutputKind } from '../api/types';
 import { modelStreamTiming } from '../hooks/useModelStream';
+import { useSeriesHistory } from '../hooks/useSeriesHistory';
 import { useLiveStream } from '../hooks/useLiveStream';
 import { useThrottledValue } from '../hooks/useThrottledValue';
 import ModelSummary from './ModelSummary';
@@ -64,6 +65,13 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
 
   const live = useLiveStream(name, { outputs: outputIds });
   const frame = useThrottledValue(live.frame, modelStreamTiming.displayIntervalMs);
+
+  const sampled = variable ? frame?.outputs[variable.id] : undefined;
+  const history = useSeriesHistory(
+    frame,
+    sampled?.kind === 'scalar' ? sampled.value : undefined,
+    `${variable?.id ?? ''}`
+  );
 
   const changeKind = (next: KindFilter) => {
     setKind(next);
@@ -174,6 +182,7 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
             chart={chart.id}
             variableId={variable.id}
             axisId={axisId}
+            history={history}
             outputs={frame?.outputs}
           />
         </Panel>

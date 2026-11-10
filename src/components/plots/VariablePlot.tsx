@@ -1,4 +1,5 @@
 import type { ArrayOutput, Output, ParticlesOutput, ScalarOutput } from '../../api/types';
+import type { HistoryPoint } from '../../hooks/useSeriesHistory';
 import type { ChartId, PhaseSpaceCoord } from './charts';
 import ArrayTable from './ArrayTable';
 import Image2D from './Image2D';
@@ -7,6 +8,7 @@ import ParticleStatsList from './ParticleStatsList';
 import PhaseSpace2D from './PhaseSpace2D';
 import PlotEmpty from './PlotEmpty';
 import ScalarList from './ScalarList';
+import TimeSeries from './TimeSeries';
 
 type VariablePlotProps = {
   chart: ChartId;
@@ -16,6 +18,8 @@ type VariablePlotProps = {
   axisId?: string;
   /** The coordinates of `phase-space-2d`. */
   phaseSpace?: { x: PhaseSpaceCoord; y: PhaseSpaceCoord };
+  /** The past values of `variableId`, for the time-series charts. */
+  history?: HistoryPoint[];
   /** The latest values by id. `undefined` until the first values arrive. */
   outputs: Record<string, Output> | undefined;
 };
@@ -33,8 +37,20 @@ const VariablePlot = ({
   variableId,
   axisId,
   phaseSpace = { x: 'x', y: 'px' },
+  history = [],
   outputs,
 }: VariablePlotProps) => {
+  if (chart === 'scalar-time-series') {
+    const scalar = outputs?.[variableId];
+    return (
+      <TimeSeries
+        points={history}
+        name={variableId}
+        unit={scalar?.kind === 'scalar' ? scalar.unit : undefined}
+      />
+    );
+  }
+
   if (!outputs) return <PlotEmpty>Waiting for the first values…</PlotEmpty>;
 
   if (chart === 'scalar-list') return <ScalarList scalars={scalarsOf(outputs)} />;

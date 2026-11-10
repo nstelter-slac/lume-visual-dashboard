@@ -7,8 +7,8 @@ const ids = (
 ) => chartsForVariable(v, all).map((c) => c.id);
 
 describe('chartsForVariable', () => {
-  it('gives a scalar the list chart', () => {
-    expect(ids({ kind: 'scalar' })).toContain('scalar-list');
+  it('gives a scalar the time series and list charts', () => {
+    expect(ids({ kind: 'scalar' })).toEqual(['scalar-time-series', 'scalar-list']);
   });
 
   it('gives 1D and 2D arrays a table, and other arrays nothing', () => {
