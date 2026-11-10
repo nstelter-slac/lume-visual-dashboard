@@ -15,6 +15,7 @@ import { Route as ModelsModelIdRouteImport } from './routes/models/$modelId'
 import { Route as ModelsModelIdIndexRouteImport } from './routes/models/$modelId/index'
 import { Route as ModelsModelIdCanopyRouteImport } from './routes/models/$modelId/canopy'
 import { Route as ModelsModelIdInteractiveRouteImport } from './routes/models/$modelId/interactive'
+import { Route as ModelsModelIdPlotsRouteImport } from './routes/models/$modelId/plots'
 import { Route as ModelsModelIdStreamingRouteImport } from './routes/models/$modelId/streaming'
 
 const IndexRoute = IndexRouteImport.update({
@@ -48,6 +49,11 @@ const ModelsModelIdInteractiveRoute =
     path: '/interactive',
     getParentRoute: () => ModelsModelIdRoute,
   } as any)
+const ModelsModelIdPlotsRoute = ModelsModelIdPlotsRouteImport.update({
+  id: '/plots',
+  path: '/plots',
+  getParentRoute: () => ModelsModelIdRoute,
+} as any)
 const ModelsModelIdStreamingRoute = ModelsModelIdStreamingRouteImport.update({
   id: '/streaming',
   path: '/streaming',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/models/': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
+  '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
   '/models/$modelId/': typeof ModelsModelIdIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/models': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
+  '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
   '/models/$modelId': typeof ModelsModelIdIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/models/': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
+  '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
   '/models/$modelId/': typeof ModelsModelIdIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/models/'
     | '/models/$modelId/canopy'
     | '/models/$modelId/interactive'
+    | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
     | '/models/$modelId/'
   fileRoutesByTo: FileRoutesByTo
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/models/$modelId/canopy'
     | '/models/$modelId/interactive'
+    | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
     | '/models/$modelId'
   id:
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/models/'
     | '/models/$modelId/canopy'
     | '/models/$modelId/interactive'
+    | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
     | '/models/$modelId/'
   fileRoutesById: FileRoutesById
@@ -160,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModelsModelIdInteractiveRouteImport
       parentRoute: typeof ModelsModelIdRoute
     }
+    '/models/$modelId/plots': {
+      id: '/models/$modelId/plots'
+      path: '/plots'
+      fullPath: '/models/$modelId/plots'
+      preLoaderRoute: typeof ModelsModelIdPlotsRouteImport
+      parentRoute: typeof ModelsModelIdRoute
+    }
     '/models/$modelId/streaming': {
       id: '/models/$modelId/streaming'
       path: '/streaming'
@@ -173,6 +192,7 @@ declare module '@tanstack/react-router' {
 interface ModelsModelIdRouteChildren {
   ModelsModelIdCanopyRoute: typeof ModelsModelIdCanopyRoute
   ModelsModelIdInteractiveRoute: typeof ModelsModelIdInteractiveRoute
+  ModelsModelIdPlotsRoute: typeof ModelsModelIdPlotsRoute
   ModelsModelIdStreamingRoute: typeof ModelsModelIdStreamingRoute
   ModelsModelIdIndexRoute: typeof ModelsModelIdIndexRoute
 }
@@ -180,6 +200,7 @@ interface ModelsModelIdRouteChildren {
 const ModelsModelIdRouteChildren: ModelsModelIdRouteChildren = {
   ModelsModelIdCanopyRoute: ModelsModelIdCanopyRoute,
   ModelsModelIdInteractiveRoute: ModelsModelIdInteractiveRoute,
+  ModelsModelIdPlotsRoute: ModelsModelIdPlotsRoute,
   ModelsModelIdStreamingRoute: ModelsModelIdStreamingRoute,
   ModelsModelIdIndexRoute: ModelsModelIdIndexRoute,
 }

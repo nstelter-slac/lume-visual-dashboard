@@ -109,3 +109,24 @@
 .col-source {
   width: 15%;
 }
+
+.plot-empty {
+  padding-block: 2rem;
+  text-align: center;
+  color: var(--cds-text-secondary);
+}
+
+.plot-scroll {
+  max-block-size: 30rem;
+  overflow: auto;
+}
+
+.plot-note {
+  padding-block-start: 0.5rem;
+  font-size: var(--cds-label-01-font-size, 0.75rem);
+  color: var(--cds-text-secondary);
+}
+
+.plot-scroll .numeric {
+  font-variant-numeric: tabular-nums;
+}
