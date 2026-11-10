@@ -60,6 +60,7 @@ const VariablePlot = ({
     case 'phase-space-2d':
       return output.kind === 'particles' ? (
         <PhaseSpace2D
+          key={variableId}
           particles={output as ParticlesOutput}
           xKey={phaseSpace.x}
           yKey={phaseSpace.y}
