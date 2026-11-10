@@ -38,6 +38,7 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
   const [chartChoice, setChartChoice] = useState<ChartId>();
   const [phaseX, setPhaseX] = useState<PhaseSpaceCoord>('x');
   const [phaseY, setPhaseY] = useState<PhaseSpaceCoord>('px');
+  const [statChoice, setStatChoice] = useState<string>();
   const [axisChoice, setAxisChoice] = useState<string>();
 
   const variables = config.outputs.filter((output) => kind === 'all' || output.kind === kind);
@@ -67,11 +68,15 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
   const frame = useThrottledValue(live.frame, modelStreamTiming.displayIntervalMs);
 
   const sampled = variable ? frame?.outputs[variable.id] : undefined;
-  const history = useSeriesHistory(
-    frame,
-    sampled?.kind === 'scalar' ? sampled.value : undefined,
-    `${variable?.id ?? ''}`
-  );
+  const statNames = sampled?.kind === 'particles' ? Object.keys(sampled.stats) : [];
+  const stat = statChoice && statNames.includes(statChoice) ? statChoice : statNames[0];
+  const sampleValue =
+    sampled?.kind === 'scalar'
+      ? sampled.value
+      : sampled?.kind === 'particles' && chart?.id === 'particle-stats-time-series' && stat
+        ? (sampled.stats[stat] ?? null)
+        : undefined;
+  const history = useSeriesHistory(frame, sampleValue, `${variable?.id ?? ''}:${stat ?? ''}`);
 
   const changeKind = (next: KindFilter) => {
     setKind(next);
@@ -160,6 +165,18 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
               </Select>
             </>
           ) : null}
+          {chart?.id === 'particle-stats-time-series' && statNames.length > 0 ? (
+            <Select
+              id="plot-stat-select"
+              labelText="Beam summary value"
+              value={stat}
+              onChange={(e) => setStatChoice(e.target.value)}
+            >
+              {statNames.map((n) => (
+                <SelectItem key={n} value={n} text={n} />
+              ))}
+            </Select>
+          ) : null}
           {variable && chart ? (
             <div className="stream-toolbar">
               <Tag type={live.status === 'open' ? 'green' : 'gray'}>{live.status}</Tag>
@@ -182,6 +199,7 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
             chart={chart.id}
             variableId={variable.id}
             axisId={axisId}
+            stat={stat}
             history={history}
             outputs={frame?.outputs}
           />

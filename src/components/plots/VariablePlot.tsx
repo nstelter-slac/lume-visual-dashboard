@@ -18,6 +18,8 @@ type VariablePlotProps = {
   axisId?: string;
   /** The coordinates of `phase-space-2d`. */
   phaseSpace?: { x: PhaseSpaceCoord; y: PhaseSpaceCoord };
+  /** The beam summary value of `particle-stats-time-series`. */
+  stat?: string;
   /** The past values of `variableId`, for the time-series charts. */
   history?: HistoryPoint[];
   /** The latest values by id. `undefined` until the first values arrive. */
@@ -37,6 +39,7 @@ const VariablePlot = ({
   variableId,
   axisId,
   phaseSpace = { x: 'x', y: 'px' },
+  stat,
   history = [],
   outputs,
 }: VariablePlotProps) => {
@@ -82,6 +85,15 @@ const VariablePlot = ({
           yKey={phaseSpace.y}
         />
       ) : null;
+    case 'particle-stats-time-series':
+      if (output.kind !== 'particles') return null;
+      return (
+        <TimeSeries
+          points={history}
+          name={stat ?? ''}
+          unit={stat ? (output as ParticlesOutput).stats_units[stat] : undefined}
+        />
+      );
     case 'particle-stats-list':
       return output.kind === 'particles' ? (
         <ParticleStatsList particles={output as ParticlesOutput} />

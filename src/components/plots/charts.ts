@@ -8,7 +8,8 @@ export type ChartId =
   | 'image-2d'
   | 'array-table'
   | 'phase-space-2d'
-  | 'particle-stats-list';
+  | 'particle-stats-list'
+  | 'particle-stats-time-series';
 
 export interface ChartInfo {
   id: ChartId;
@@ -23,6 +24,10 @@ const CHARTS: Record<ChartId, ChartInfo> = {
   'image-2d': { id: 'image-2d', label: '2D image' },
   'array-table': { id: 'array-table', label: 'Table / matrix' },
   'phase-space-2d': { id: 'phase-space-2d', label: '2D phase space' },
+  'particle-stats-time-series': {
+    id: 'particle-stats-time-series',
+    label: 'Beam summary value over time',
+  },
   'particle-stats-list': { id: 'particle-stats-list', label: 'Beam summary values' },
 };
 
@@ -70,7 +75,11 @@ export function chartsForVariable(variable: VariableShape, all: VariableShape[] 
       return dims === 2 ? [CHARTS['image-2d'], CHARTS['array-table']] : [];
     }
     case 'particles':
-      return [CHARTS['phase-space-2d'], CHARTS['particle-stats-list']];
+      return [
+        CHARTS['phase-space-2d'],
+        CHARTS['particle-stats-list'],
+        CHARTS['particle-stats-time-series'],
+      ];
     case 'value':
       return [];
   }
