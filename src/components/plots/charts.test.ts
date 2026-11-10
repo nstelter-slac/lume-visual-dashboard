@@ -8,7 +8,11 @@ const ids = (
 
 describe('chartsForVariable', () => {
   it('gives a scalar the time series and list charts', () => {
-    expect(ids({ kind: 'scalar' })).toEqual(['scalar-time-series', 'scalar-list']);
+    expect(ids({ kind: 'scalar' })).toEqual([
+      'scalar-time-series',
+      'scalar-vs-scalar',
+      'scalar-list',
+    ]);
   });
 
   it('gives 1D and 2D arrays a table, and other arrays nothing', () => {

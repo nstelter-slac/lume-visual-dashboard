@@ -7,6 +7,7 @@ import Line1D from './Line1D';
 import ParticleStatsList from './ParticleStatsList';
 import PhaseSpace2D from './PhaseSpace2D';
 import PlotEmpty from './PlotEmpty';
+import ScalarVsScalar from './ScalarVsScalar';
 import ScalarList from './ScalarList';
 import TimeSeries from './TimeSeries';
 
@@ -18,6 +19,10 @@ type VariablePlotProps = {
   axisId?: string;
   /** The coordinates of `phase-space-2d`. */
   phaseSpace?: { x: PhaseSpaceCoord; y: PhaseSpaceCoord };
+  /** The scalar on the x axis of `scalar-vs-scalar`. */
+  xScalarId?: string;
+  /** The past values of `xScalarId`. */
+  xHistory?: HistoryPoint[];
   /** The beam summary value of `particle-stats-time-series`. */
   stat?: string;
   /** The past values of `variableId`, for the time-series charts. */
@@ -40,9 +45,29 @@ const VariablePlot = ({
   axisId,
   phaseSpace = { x: 'x', y: 'px' },
   stat,
+  xScalarId,
+  xHistory = [],
   history = [],
   outputs,
 }: VariablePlotProps) => {
+  if (chart === 'scalar-vs-scalar') {
+    const unitOf = (id?: string) => {
+      const o = id ? outputs?.[id] : undefined;
+      return o?.kind === 'scalar' ? o.unit : undefined;
+    };
+    if (!xScalarId) return <PlotEmpty>Pick a scalar for the x axis.</PlotEmpty>;
+    return (
+      <ScalarVsScalar
+        xName={xScalarId}
+        yName={variableId}
+        xUnit={unitOf(xScalarId)}
+        yUnit={unitOf(variableId)}
+        xPoints={xHistory}
+        yPoints={history}
+      />
+    );
+  }
+
   if (chart === 'scalar-time-series') {
     const scalar = outputs?.[variableId];
     return (

@@ -2,6 +2,7 @@ import type { Output } from '../../api/types';
 
 export type ChartId =
   | 'scalar-time-series'
+  | 'scalar-vs-scalar'
   | 'scalar-list'
   | 'line-vs-index'
   | 'line-vs-s'
@@ -18,6 +19,7 @@ export interface ChartInfo {
 
 const CHARTS: Record<ChartId, ChartInfo> = {
   'scalar-time-series': { id: 'scalar-time-series', label: 'Value over time' },
+  'scalar-vs-scalar': { id: 'scalar-vs-scalar', label: 'Scalar vs scalar' },
   'scalar-list': { id: 'scalar-list', label: 'List of values' },
   'line-vs-index': { id: 'line-vs-index', label: 'Line vs index' },
   'line-vs-s': { id: 'line-vs-s', label: 'Line vs s (or another array)' },
@@ -61,7 +63,7 @@ export function axisCandidates(variable: VariableShape, all: VariableShape[]): s
 export function chartsForVariable(variable: VariableShape, all: VariableShape[] = []): ChartInfo[] {
   switch (variable.kind) {
     case 'scalar':
-      return [CHARTS['scalar-time-series'], CHARTS['scalar-list']];
+      return [CHARTS['scalar-time-series'], CHARTS['scalar-vs-scalar'], CHARTS['scalar-list']];
     case 'array': {
       const dims = variable.shape?.length ?? 0;
       if (dims === 1) {

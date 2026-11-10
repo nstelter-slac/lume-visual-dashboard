@@ -39,6 +39,7 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
   const [phaseX, setPhaseX] = useState<PhaseSpaceCoord>('x');
   const [phaseY, setPhaseY] = useState<PhaseSpaceCoord>('px');
   const [statChoice, setStatChoice] = useState<string>();
+  const [xScalarChoice, setXScalarChoice] = useState<string>();
   const [axisChoice, setAxisChoice] = useState<string>();
 
   const variables = config.outputs.filter((output) => kind === 'all' || output.kind === kind);
@@ -56,12 +57,18 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
         : axes[0]
       : undefined;
 
+  const otherScalars = config.outputs.filter((o) => o.kind === 'scalar' && o.id !== variable?.id);
+  const xScalarId =
+    chart?.id === 'scalar-vs-scalar'
+      ? (otherScalars.find((o) => o.id === xScalarChoice)?.id ?? otherScalars[0]?.id)
+      : undefined;
+
   // useLiveStream keys on the content, so a fresh array each render is fine.
   const outputIds =
     variable && chart
       ? chart.id === 'scalar-list'
         ? config.outputs.filter((o) => o.kind === 'scalar').map((o) => o.id)
-        : [variable.id, ...(axisId ? [axisId] : [])]
+        : [variable.id, ...(axisId ? [axisId] : []), ...(xScalarId ? [xScalarId] : [])]
       : [];
 
   const live = useLiveStream(name, { outputs: outputIds });
@@ -76,7 +83,14 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
       : sampled?.kind === 'particles' && chart?.id === 'particle-stats-time-series' && stat
         ? (sampled.stats[stat] ?? null)
         : undefined;
-  const history = useSeriesHistory(frame, sampleValue, `${variable?.id ?? ''}:${stat ?? ''}`);
+  const pairKey = `${variable?.id ?? ''}:${stat ?? ''}|${xScalarId ?? ''}`;
+  const history = useSeriesHistory(frame, sampleValue, pairKey);
+  const xSampled = xScalarId ? frame?.outputs[xScalarId] : undefined;
+  const xHistory = useSeriesHistory(
+    frame,
+    xSampled?.kind === 'scalar' ? xSampled.value : undefined,
+    pairKey
+  );
 
   const changeKind = (next: KindFilter) => {
     setKind(next);
@@ -165,6 +179,18 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
               </Select>
             </>
           ) : null}
+          {xScalarId ? (
+            <Select
+              id="plot-x-scalar-select"
+              labelText="x axis scalar"
+              value={xScalarId}
+              onChange={(e) => setXScalarChoice(e.target.value)}
+            >
+              {otherScalars.map((o) => (
+                <SelectItem key={o.id} value={o.id} text={o.id} />
+              ))}
+            </Select>
+          ) : null}
           {chart?.id === 'particle-stats-time-series' && statNames.length > 0 ? (
             <Select
               id="plot-stat-select"
@@ -200,6 +226,8 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
             variableId={variable.id}
             axisId={axisId}
             stat={stat}
+            xScalarId={xScalarId}
+            xHistory={xHistory}
             history={history}
             outputs={frame?.outputs}
           />
