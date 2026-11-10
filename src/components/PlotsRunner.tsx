@@ -7,7 +7,13 @@ import { useLiveStream } from '../hooks/useLiveStream';
 import { useThrottledValue } from '../hooks/useThrottledValue';
 import ModelSummary from './ModelSummary';
 import Panel from './Panel';
-import { axisCandidates, chartsForVariable, type ChartId } from './plots/charts';
+import {
+  axisCandidates,
+  chartsForVariable,
+  PHASE_SPACE_COORDS,
+  type PhaseSpaceCoord,
+  type ChartId,
+} from './plots/charts';
 import VariablePlot from './plots/VariablePlot';
 
 type PlotsRunnerProps = {
@@ -29,6 +35,8 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
   const [kind, setKind] = useState<KindFilter>('all');
   const [variableId, setVariableId] = useState('');
   const [chartChoice, setChartChoice] = useState<ChartId>();
+  const [phaseX, setPhaseX] = useState<PhaseSpaceCoord>('x');
+  const [phaseY, setPhaseY] = useState<PhaseSpaceCoord>('px');
   const [axisChoice, setAxisChoice] = useState<string>();
 
   const variables = config.outputs.filter((output) => kind === 'all' || output.kind === kind);
@@ -119,6 +127,30 @@ const PlotsRunner = ({ name, config }: PlotsRunnerProps) => {
                 <SelectItem key={id} value={id} text={id} />
               ))}
             </Select>
+          ) : null}
+          {chart?.id === 'phase-space-2d' ? (
+            <>
+              <Select
+                id="plot-phase-x-select"
+                labelText="Horizontal axis"
+                value={phaseX}
+                onChange={(e) => setPhaseX(e.target.value as PhaseSpaceCoord)}
+              >
+                {PHASE_SPACE_COORDS.map((c) => (
+                  <SelectItem key={c} value={c} text={c} />
+                ))}
+              </Select>
+              <Select
+                id="plot-phase-y-select"
+                labelText="Vertical axis"
+                value={phaseY}
+                onChange={(e) => setPhaseY(e.target.value as PhaseSpaceCoord)}
+              >
+                {PHASE_SPACE_COORDS.map((c) => (
+                  <SelectItem key={c} value={c} text={c} />
+                ))}
+              </Select>
+            </>
           ) : null}
           {variable && chart ? (
             <div className="stream-toolbar">

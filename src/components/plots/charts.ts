@@ -6,6 +6,7 @@ export type ChartId =
   | 'line-vs-s'
   | 'image-2d'
   | 'array-table'
+  | 'phase-space-2d'
   | 'particle-stats-list';
 
 export interface ChartInfo {
@@ -19,6 +20,7 @@ const CHARTS: Record<ChartId, ChartInfo> = {
   'line-vs-s': { id: 'line-vs-s', label: 'Line vs s (or another array)' },
   'image-2d': { id: 'image-2d', label: '2D image' },
   'array-table': { id: 'array-table', label: 'Table / matrix' },
+  'phase-space-2d': { id: 'phase-space-2d', label: '2D phase space' },
   'particle-stats-list': { id: 'particle-stats-list', label: 'Beam summary values' },
 };
 
@@ -66,8 +68,12 @@ export function chartsForVariable(variable: VariableShape, all: VariableShape[] 
       return dims === 2 ? [CHARTS['image-2d'], CHARTS['array-table']] : [];
     }
     case 'particles':
-      return [CHARTS['particle-stats-list']];
+      return [CHARTS['phase-space-2d'], CHARTS['particle-stats-list']];
     case 'value':
       return [];
   }
 }
+
+/** The particle coordinates a phase-space plot can use. */
+export const PHASE_SPACE_COORDS = ['x', 'px', 'y', 'py', 'z', 'pz'] as const;
+export type PhaseSpaceCoord = (typeof PHASE_SPACE_COORDS)[number];

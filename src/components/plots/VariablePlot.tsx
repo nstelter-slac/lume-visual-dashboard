@@ -1,9 +1,10 @@
 import type { ArrayOutput, Output, ParticlesOutput, ScalarOutput } from '../../api/types';
-import type { ChartId } from './charts';
+import type { ChartId, PhaseSpaceCoord } from './charts';
 import ArrayTable from './ArrayTable';
 import Image2D from './Image2D';
 import Line1D from './Line1D';
 import ParticleStatsList from './ParticleStatsList';
+import PhaseSpace2D from './PhaseSpace2D';
 import PlotEmpty from './PlotEmpty';
 import ScalarList from './ScalarList';
 
@@ -13,6 +14,8 @@ type VariablePlotProps = {
   variableId: string;
   /** The array used as the x axis of `line-vs-s`. */
   axisId?: string;
+  /** The coordinates of `phase-space-2d`. */
+  phaseSpace?: { x: PhaseSpaceCoord; y: PhaseSpaceCoord };
   /** The latest values by id. `undefined` until the first values arrive. */
   outputs: Record<string, Output> | undefined;
 };
@@ -25,7 +28,13 @@ const scalarsOf = (outputs: Record<string, Output>) =>
   );
 
 /** Draws one variable with the chart type that was picked. */
-const VariablePlot = ({ chart, variableId, axisId, outputs }: VariablePlotProps) => {
+const VariablePlot = ({
+  chart,
+  variableId,
+  axisId,
+  phaseSpace = { x: 'x', y: 'px' },
+  outputs,
+}: VariablePlotProps) => {
   if (!outputs) return <PlotEmpty>Waiting for the first values…</PlotEmpty>;
 
   if (chart === 'scalar-list') return <ScalarList scalars={scalarsOf(outputs)} />;
@@ -48,6 +57,14 @@ const VariablePlot = ({ chart, variableId, axisId, outputs }: VariablePlotProps)
       return array ? <Image2D image={array} /> : null;
     case 'array-table':
       return array ? <ArrayTable array={array} /> : null;
+    case 'phase-space-2d':
+      return output.kind === 'particles' ? (
+        <PhaseSpace2D
+          particles={output as ParticlesOutput}
+          xKey={phaseSpace.x}
+          yKey={phaseSpace.y}
+        />
+      ) : null;
     case 'particle-stats-list':
       return output.kind === 'particles' ? (
         <ParticleStatsList particles={output as ParticlesOutput} />

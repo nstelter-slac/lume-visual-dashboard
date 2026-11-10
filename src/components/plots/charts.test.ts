@@ -19,7 +19,7 @@ describe('chartsForVariable', () => {
   });
 
   it('gives particles the summary list, and plain values nothing', () => {
-    expect(ids({ kind: 'particles' })).toContain('particle-stats-list');
+    expect(ids({ kind: 'particles' })).toEqual(['phase-space-2d', 'particle-stats-list']);
     expect(ids({ kind: 'value' })).toEqual([]);
   });
 });
