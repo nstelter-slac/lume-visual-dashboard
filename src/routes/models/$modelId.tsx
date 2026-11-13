@@ -33,6 +33,9 @@ function ModelLayout() {
         <Link to="/models/$modelId/plots" params={{ modelId }}>
           Plots
         </Link>
+        <Link to="/models/$modelId/dashboard" params={{ modelId }}>
+          Dashboard
+        </Link>
         <Link to="/models/$modelId/canopy" params={{ modelId }}>
           Canopy
         </Link>

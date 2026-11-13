@@ -144,3 +144,34 @@
   margin-inline: auto;
   image-rendering: pixelated;
 }
+
+.dashboard-tile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cds-border-subtle);
+  background: var(--cds-layer);
+}
+
+.dashboard-tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--cds-border-subtle);
+}
+
+.dashboard-tile-handle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.dashboard-tile-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}

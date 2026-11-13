@@ -14,6 +14,7 @@ import { Route as ModelsIndexRouteImport } from './routes/models/index'
 import { Route as ModelsModelIdRouteImport } from './routes/models/$modelId'
 import { Route as ModelsModelIdIndexRouteImport } from './routes/models/$modelId/index'
 import { Route as ModelsModelIdCanopyRouteImport } from './routes/models/$modelId/canopy'
+import { Route as ModelsModelIdDashboardRouteImport } from './routes/models/$modelId/dashboard'
 import { Route as ModelsModelIdInteractiveRouteImport } from './routes/models/$modelId/interactive'
 import { Route as ModelsModelIdPlotsRouteImport } from './routes/models/$modelId/plots'
 import { Route as ModelsModelIdStreamingRouteImport } from './routes/models/$modelId/streaming'
@@ -43,6 +44,11 @@ const ModelsModelIdCanopyRoute = ModelsModelIdCanopyRouteImport.update({
   path: '/canopy',
   getParentRoute: () => ModelsModelIdRoute,
 } as any)
+const ModelsModelIdDashboardRoute = ModelsModelIdDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ModelsModelIdRoute,
+} as any)
 const ModelsModelIdInteractiveRoute =
   ModelsModelIdInteractiveRouteImport.update({
     id: '/interactive',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/models/$modelId': typeof ModelsModelIdRouteWithChildren
   '/models/': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
+  '/models/$modelId/dashboard': typeof ModelsModelIdDashboardRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
   '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/models': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
+  '/models/$modelId/dashboard': typeof ModelsModelIdDashboardRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
   '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/models/$modelId': typeof ModelsModelIdRouteWithChildren
   '/models/': typeof ModelsIndexRoute
   '/models/$modelId/canopy': typeof ModelsModelIdCanopyRoute
+  '/models/$modelId/dashboard': typeof ModelsModelIdDashboardRoute
   '/models/$modelId/interactive': typeof ModelsModelIdInteractiveRoute
   '/models/$modelId/plots': typeof ModelsModelIdPlotsRoute
   '/models/$modelId/streaming': typeof ModelsModelIdStreamingRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/models/$modelId'
     | '/models/'
     | '/models/$modelId/canopy'
+    | '/models/$modelId/dashboard'
     | '/models/$modelId/interactive'
     | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/models'
     | '/models/$modelId/canopy'
+    | '/models/$modelId/dashboard'
     | '/models/$modelId/interactive'
     | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/models/$modelId'
     | '/models/'
     | '/models/$modelId/canopy'
+    | '/models/$modelId/dashboard'
     | '/models/$modelId/interactive'
     | '/models/$modelId/plots'
     | '/models/$modelId/streaming'
@@ -165,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModelsModelIdCanopyRouteImport
       parentRoute: typeof ModelsModelIdRoute
     }
+    '/models/$modelId/dashboard': {
+      id: '/models/$modelId/dashboard'
+      path: '/dashboard'
+      fullPath: '/models/$modelId/dashboard'
+      preLoaderRoute: typeof ModelsModelIdDashboardRouteImport
+      parentRoute: typeof ModelsModelIdRoute
+    }
     '/models/$modelId/interactive': {
       id: '/models/$modelId/interactive'
       path: '/interactive'
@@ -191,6 +210,7 @@ declare module '@tanstack/react-router' {
 
 interface ModelsModelIdRouteChildren {
   ModelsModelIdCanopyRoute: typeof ModelsModelIdCanopyRoute
+  ModelsModelIdDashboardRoute: typeof ModelsModelIdDashboardRoute
   ModelsModelIdInteractiveRoute: typeof ModelsModelIdInteractiveRoute
   ModelsModelIdPlotsRoute: typeof ModelsModelIdPlotsRoute
   ModelsModelIdStreamingRoute: typeof ModelsModelIdStreamingRoute
@@ -199,6 +219,7 @@ interface ModelsModelIdRouteChildren {
 
 const ModelsModelIdRouteChildren: ModelsModelIdRouteChildren = {
   ModelsModelIdCanopyRoute: ModelsModelIdCanopyRoute,
+  ModelsModelIdDashboardRoute: ModelsModelIdDashboardRoute,
   ModelsModelIdInteractiveRoute: ModelsModelIdInteractiveRoute,
   ModelsModelIdPlotsRoute: ModelsModelIdPlotsRoute,
   ModelsModelIdStreamingRoute: ModelsModelIdStreamingRoute,
