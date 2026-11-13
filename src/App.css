@@ -173,5 +173,50 @@
 .dashboard-tile-body {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+}
+
+/* Inside a dashboard tile the plot fills the tile and rescales with it. */
+.plot-fill {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+}
+
+.plot-settings {
+  flex: none;
+  max-block-size: 60%;
   overflow: auto;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--cds-border-subtle);
+}
+
+.plot-settings > summary {
+  cursor: pointer;
+}
+
+.plot-fill-body {
+  flex: 1;
+  min-block-size: 0;
+  padding: 0.5rem;
+}
+
+.plot-fill-body .plot-scroll {
+  max-block-size: none;
+  block-size: 100%;
+}
+
+.plot-fill-body .plot-image {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+}
+
+.plot-fill-body .plot-image canvas {
+  flex: 1;
+  min-block-size: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-block-size: none;
+  object-fit: contain;
 }

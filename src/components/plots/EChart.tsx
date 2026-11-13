@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import ReactEChartsCoreImport from 'echarts-for-react/lib/core';
 import { HeatmapChart, LineChart, ScatterChart } from 'echarts/charts';
 import {
@@ -12,6 +12,8 @@ import {
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { EChartsCoreOption } from 'echarts/core';
+
+import { PlotFillContext } from './fill';
 
 // Only the parts the plots need, to keep the bundle small.
 echarts.use([
@@ -40,7 +42,9 @@ type EChartProps = {
 
 /** The shared ECharts wrapper for all plots. */
 const EChart = ({ option, height = '24rem' }: EChartProps) => {
-  const style = useMemo(() => ({ height, width: '100%' }), [height]);
+  const fill = useContext(PlotFillContext);
+  const cssHeight = fill ? '100%' : height;
+  const style = useMemo(() => ({ height: cssHeight, width: '100%' }), [cssHeight]);
   return <ReactEChartsCore echarts={echarts} option={option} style={style} notMerge lazyUpdate />;
 };
 

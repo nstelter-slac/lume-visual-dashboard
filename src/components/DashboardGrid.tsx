@@ -72,7 +72,7 @@ const DashboardGrid = ({ name, config }: DashboardGridProps) => {
                   />
                 </div>
                 <div className="dashboard-tile-body">
-                  <PlotPanel name={name} config={config} />
+                  <PlotPanel name={name} config={config} fill />
                 </div>
               </div>
             ))}

@@ -14,11 +14,14 @@ import {
   type PhaseSpaceCoord,
   type ChartId,
 } from './plots/charts';
+import { PlotFillContext } from './plots/fill';
 import VariablePlot from './plots/VariablePlot';
 
 type PlotPanelProps = {
   name?: string;
   config: ConfigResponse;
+  /** Fill the height of the parent (a dashboard tile) instead of the natural height. */
+  fill?: boolean;
 };
 
 type KindFilter = OutputKind | 'all';
@@ -32,7 +35,7 @@ const KIND_LABELS: Record<KindFilter, string> = {
 };
 
 /** One plot with its own pickers and live stream. */
-const PlotPanel = ({ name, config }: PlotPanelProps) => {
+const PlotPanel = ({ name, config, fill = false }: PlotPanelProps) => {
   const [kind, setKind] = useState<KindFilter>('all');
   const [variableId, setVariableId] = useState('');
   const [chartChoice, setChartChoice] = useState<ChartId>();
@@ -97,139 +100,160 @@ const PlotPanel = ({ name, config }: PlotPanelProps) => {
     setVariableId('');
   };
 
+  const controls = (
+    <Stack gap={6}>
+      <Select
+        id="plot-kind-select"
+        labelText="Variable type"
+        value={kind}
+        onChange={(e) => changeKind(e.target.value as KindFilter)}
+      >
+        {(Object.keys(KIND_LABELS) as KindFilter[]).map((k) => (
+          <SelectItem key={k} value={k} text={KIND_LABELS[k]} />
+        ))}
+      </Select>
+      <Select
+        id="plot-variable-select"
+        labelText="Variable"
+        value={variableId}
+        onChange={(e) => setVariableId(e.target.value)}
+      >
+        <SelectItem value="" text="Choose a variable…" />
+        {variables.map((output) => (
+          <SelectItem key={output.id} value={output.id} text={`${output.id} (${output.kind})`} />
+        ))}
+      </Select>
+      <Select
+        id="plot-chart-select"
+        labelText="Chart type"
+        value={chart?.id ?? ''}
+        disabled={charts.length === 0}
+        onChange={(e) => setChartChoice(e.target.value as ChartId)}
+      >
+        {charts.length === 0 ? (
+          <SelectItem value="" text={variable ? 'No chart for this variable' : '—'} />
+        ) : (
+          charts.map((c) => <SelectItem key={c.id} value={c.id} text={c.label} />)
+        )}
+      </Select>
+      {axisId ? (
+        <Select
+          id="plot-axis-select"
+          labelText="x axis array"
+          value={axisId}
+          onChange={(e) => setAxisChoice(e.target.value)}
+        >
+          {axes.map((id) => (
+            <SelectItem key={id} value={id} text={id} />
+          ))}
+        </Select>
+      ) : null}
+      {chart?.id === 'phase-space-2d' ? (
+        <>
+          <Select
+            id="plot-phase-x-select"
+            labelText="Horizontal axis"
+            value={phaseX}
+            onChange={(e) => setPhaseX(e.target.value as PhaseSpaceCoord)}
+          >
+            {PHASE_SPACE_COORDS.map((c) => (
+              <SelectItem key={c} value={c} text={c} />
+            ))}
+          </Select>
+          <Select
+            id="plot-phase-y-select"
+            labelText="Vertical axis"
+            value={phaseY}
+            onChange={(e) => setPhaseY(e.target.value as PhaseSpaceCoord)}
+          >
+            {PHASE_SPACE_COORDS.map((c) => (
+              <SelectItem key={c} value={c} text={c} />
+            ))}
+          </Select>
+        </>
+      ) : null}
+      {xScalarId ? (
+        <Select
+          id="plot-x-scalar-select"
+          labelText="x axis scalar"
+          value={xScalarId}
+          onChange={(e) => setXScalarChoice(e.target.value)}
+        >
+          {otherScalars.map((o) => (
+            <SelectItem key={o.id} value={o.id} text={o.id} />
+          ))}
+        </Select>
+      ) : null}
+      {chart?.id === 'particle-stats-time-series' && statNames.length > 0 ? (
+        <Select
+          id="plot-stat-select"
+          labelText="Beam summary value"
+          value={stat}
+          onChange={(e) => setStatChoice(e.target.value)}
+        >
+          {statNames.map((n) => (
+            <SelectItem key={n} value={n} text={n} />
+          ))}
+        </Select>
+      ) : null}
+      {variable && chart ? (
+        <div className="stream-toolbar">
+          <Tag type={live.status === 'open' ? 'green' : 'gray'}>{live.status}</Tag>
+        </div>
+      ) : null}
+      {live.status === 'closed' ? (
+        <InlineNotification
+          kind="error"
+          title="Live stream closed"
+          subtitle={live.error?.message}
+          hideCloseButton
+          lowContrast
+        />
+      ) : null}
+    </Stack>
+  );
+
+  const plotElement =
+    variable && chart ? (
+      <VariablePlot
+        chart={chart.id}
+        variableId={variable.id}
+        axisId={axisId}
+        stat={stat}
+        xScalarId={xScalarId}
+        xHistory={xHistory}
+        history={history}
+        outputs={frame?.outputs}
+      />
+    ) : null;
+
+  if (fill) {
+    return (
+      <PlotFillContext.Provider value>
+        <div className="plot-fill">
+          <details className="plot-settings" open={!variable}>
+            <summary>
+              {variable ? `${variable.id} · ${chart?.label ?? ''}` : 'Choose a variable'}
+            </summary>
+            {controls}
+          </details>
+          <div className="plot-fill-body">{plotElement}</div>
+        </div>
+      </PlotFillContext.Provider>
+    );
+  }
+
   return (
     <Stack gap={7}>
       <Panel
         title="Plots"
         description="Pick a variable. The chart list shows only the charts that fit it."
       >
-        <Stack gap={6}>
-          <Select
-            id="plot-kind-select"
-            labelText="Variable type"
-            value={kind}
-            onChange={(e) => changeKind(e.target.value as KindFilter)}
-          >
-            {(Object.keys(KIND_LABELS) as KindFilter[]).map((k) => (
-              <SelectItem key={k} value={k} text={KIND_LABELS[k]} />
-            ))}
-          </Select>
-          <Select
-            id="plot-variable-select"
-            labelText="Variable"
-            value={variableId}
-            onChange={(e) => setVariableId(e.target.value)}
-          >
-            <SelectItem value="" text="Choose a variable…" />
-            {variables.map((output) => (
-              <SelectItem
-                key={output.id}
-                value={output.id}
-                text={`${output.id} (${output.kind})`}
-              />
-            ))}
-          </Select>
-          <Select
-            id="plot-chart-select"
-            labelText="Chart type"
-            value={chart?.id ?? ''}
-            disabled={charts.length === 0}
-            onChange={(e) => setChartChoice(e.target.value as ChartId)}
-          >
-            {charts.length === 0 ? (
-              <SelectItem value="" text={variable ? 'No chart for this variable' : '—'} />
-            ) : (
-              charts.map((c) => <SelectItem key={c.id} value={c.id} text={c.label} />)
-            )}
-          </Select>
-          {axisId ? (
-            <Select
-              id="plot-axis-select"
-              labelText="x axis array"
-              value={axisId}
-              onChange={(e) => setAxisChoice(e.target.value)}
-            >
-              {axes.map((id) => (
-                <SelectItem key={id} value={id} text={id} />
-              ))}
-            </Select>
-          ) : null}
-          {chart?.id === 'phase-space-2d' ? (
-            <>
-              <Select
-                id="plot-phase-x-select"
-                labelText="Horizontal axis"
-                value={phaseX}
-                onChange={(e) => setPhaseX(e.target.value as PhaseSpaceCoord)}
-              >
-                {PHASE_SPACE_COORDS.map((c) => (
-                  <SelectItem key={c} value={c} text={c} />
-                ))}
-              </Select>
-              <Select
-                id="plot-phase-y-select"
-                labelText="Vertical axis"
-                value={phaseY}
-                onChange={(e) => setPhaseY(e.target.value as PhaseSpaceCoord)}
-              >
-                {PHASE_SPACE_COORDS.map((c) => (
-                  <SelectItem key={c} value={c} text={c} />
-                ))}
-              </Select>
-            </>
-          ) : null}
-          {xScalarId ? (
-            <Select
-              id="plot-x-scalar-select"
-              labelText="x axis scalar"
-              value={xScalarId}
-              onChange={(e) => setXScalarChoice(e.target.value)}
-            >
-              {otherScalars.map((o) => (
-                <SelectItem key={o.id} value={o.id} text={o.id} />
-              ))}
-            </Select>
-          ) : null}
-          {chart?.id === 'particle-stats-time-series' && statNames.length > 0 ? (
-            <Select
-              id="plot-stat-select"
-              labelText="Beam summary value"
-              value={stat}
-              onChange={(e) => setStatChoice(e.target.value)}
-            >
-              {statNames.map((n) => (
-                <SelectItem key={n} value={n} text={n} />
-              ))}
-            </Select>
-          ) : null}
-          {variable && chart ? (
-            <div className="stream-toolbar">
-              <Tag type={live.status === 'open' ? 'green' : 'gray'}>{live.status}</Tag>
-            </div>
-          ) : null}
-          {live.status === 'closed' ? (
-            <InlineNotification
-              kind="error"
-              title="Live stream closed"
-              subtitle={live.error?.message}
-              hideCloseButton
-              lowContrast
-            />
-          ) : null}
-        </Stack>
+        {controls}
       </Panel>
       {variable && chart ? (
         <Panel title={variable.id} description={chart.label}>
-          <VariablePlot
-            chart={chart.id}
-            variableId={variable.id}
-            axisId={axisId}
-            stat={stat}
-            xScalarId={xScalarId}
-            xHistory={xHistory}
-            history={history}
-            outputs={frame?.outputs}
-          />
+          {plotElement}
         </Panel>
       ) : null}
     </Stack>
